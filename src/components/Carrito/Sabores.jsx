@@ -1,102 +1,91 @@
-import React, { useEffect, useState } from "react";
-import pastelApi from "../api/PastelApi";
+import   { useEffect, useState } from "react";
+import pastelApi from "../../api/PastelApi";
 
-export const Categorias = () => {
-  const [categorias, setCategorias] = useState([]);
+export const Sabores = () => {
+  const [sabores, setSabores] = useState([]);
   const [nombre, setNombre] = useState("");
   const [editando, setEditando] = useState(null);
   const [nombreEdit, setNombreEdit] = useState("");
 
-  // Listar categorías
-  const obtenerCategorias = async () => {
+  const obtenerSabores = async () => {
     try {
-      const { data } = await pastelApi.get("/cat/");
-      setCategorias(data.categorias || []);
-    } catch (error) {
-      alert("Error al cargar categorías");
+      const { data } = await pastelApi.get("opc/sabores");
+      setSabores(data.sabores || []);
+    } catch {
+      alert("Error al cargar sabores");
     }
   };
 
   useEffect(() => {
-    obtenerCategorias();
+    obtenerSabores();
   }, []);
 
-  // Crear categoría
   const handleCrear = async (e) => {
     e.preventDefault();
     if (!nombre.trim()) return;
     try {
-      await pastelApi.post("/cat/crear", { nombre });
+      await pastelApi.post("opc/sabor/crear", { nombre });
       setNombre("");
-      obtenerCategorias();
-    } catch (error) {
-      alert("Error al crear categoría");
+      obtenerSabores();
+    } catch {
+      alert("Error al crear sabor");
     }
   };
 
-  // Eliminar categoría
   const handleEliminar = async (id) => {
-    if (!window.confirm("¿Eliminar esta categoría?")) return;
+    if (!window.confirm("¿Eliminar este sabor?")) return;
     try {
-      await pastelApi.delete(`/cat/${id}`);
-      obtenerCategorias();
-    } catch (error) {
+      await pastelApi.delete(`opc/sabor/${id}`);
+      obtenerSabores();
+    } catch {
       alert("Error al eliminar");
     }
   };
 
-  // Editar categoría
-  const handleEditar = (cat) => {
-    setEditando(cat.id);
-    setNombreEdit(cat.nombre);
+  const handleEditar = (sabor) => {
+    setEditando(sabor.id);
+    setNombreEdit(sabor.nombre);
   };
 
   const handleActualizar = async (e) => {
     e.preventDefault();
     try {
-      await pastelApi.put(`/cat/${editando}`, { nombre: nombreEdit });
+      await pastelApi.put(`opc/sabor/${editando}`, { nombre: nombreEdit });
       setEditando(null);
       setNombreEdit("");
-      obtenerCategorias();
-    } catch (error) {
+      obtenerSabores();
+    } catch {
       alert("Error al actualizar");
     }
   };
 
   return (
     <div className="max-w-xl mx-auto py-8">
-      <h2 className="text-2xl font-bold mb-4">Categorías</h2>
+      <h2 className="text-2xl font-bold mb-4">Sabores</h2>
       <form onSubmit={handleCrear} className="flex gap-2 mb-6">
         <input
           type="text"
           value={nombre}
-          onChange={(e) => setNombre(e.target.value)}
-          placeholder="Nueva categoría"
+          onChange={e => setNombre(e.target.value)}
+          placeholder="Nuevo sabor"
           className="border px-3 py-2 rounded w-full"
         />
-        <button
-          className="bg-pink-500 text-white px-4 py-2 rounded"
-          type="submit"
-        >
+        <button className="bg-orange-500 text-white px-4 py-2 rounded" type="submit">
           Crear
         </button>
       </form>
-
       <ul className="space-y-2">
-        {categorias.map((cat) =>
-          editando === cat.id ? (
-            <li key={cat.id} className="flex gap-2 items-center">
+        {sabores.map(sabor =>
+          editando === sabor.id ? (
+            <li key={sabor.id} className="flex gap-2 items-center">
               <form onSubmit={handleActualizar} className="flex gap-2 w-full">
                 <input
                   type="text"
                   value={nombreEdit}
-                  onChange={(e) => setNombreEdit(e.target.value)}
+                  onChange={e => setNombreEdit(e.target.value)}
                   className="border px-2 py-1 rounded w-full"
                 />
-                <button
-                  className="bg-green-500 text-white px-2 py-1 rounded"
-                  type="submit"
-                >
+                <button className="bg-green-500 text-white px-2 py-1 rounded" type="submit">
                   Guardar
                 </button>
                 <button
@@ -109,21 +98,18 @@ export const Categorias = () => {
               </form>
             </li>
           ) : (
-            <li
-              key={cat.id}
-              className="flex justify-between items-center border-b py-2"
-            >
-              <span>{cat.nombre}</span>
+            <li key={sabor.id} className="flex justify-between items-center border-b py-2">
+              <span>{sabor.nombre}</span>
               <div className="flex gap-2">
                 <button
                   className="text-blue-600 hover:underline"
-                  onClick={() => handleEditar(cat)}
+                  onClick={() => handleEditar(sabor)}
                 >
                   Editar
                 </button>
                 <button
                   className="text-red-600 hover:underline"
-                  onClick={() => handleEliminar(cat.id)}
+                  onClick={() => handleEliminar(sabor.id)}
                 >
                   Eliminar
                 </button>

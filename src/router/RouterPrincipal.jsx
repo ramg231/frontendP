@@ -17,6 +17,7 @@ import { Usuarios } from '../pages/Usuarios'
 import { Catalogo } from '../pages/Catalogo'
 import {  ProductoDetalle } from '../pages/ProductoDetalle'
 import {   Contacto } from '../components/Contacto'
+import { AdminOpciones } from '../pages/AdminOpciones'
 
 export const RouterPrincipal = createBrowserRouter([
   {
@@ -53,6 +54,7 @@ export const RouterPrincipal = createBrowserRouter([
       { path: 'imagen-productos', element: <ImagenProduct /> },
       { path: 'img-pro', element: <ImgProducts /> },
       { path: 'categorias', element: <Categorias /> },
+      { path: 'opciones', element: <AdminOpciones /> },
       { path: 'rol', element: <Rol /> },
       { path: 'permisos', element: <Permisos /> },
       { path: 'asignar-permisos', element: <AsignarPermisos /> },

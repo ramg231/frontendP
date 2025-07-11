@@ -1,6 +1,6 @@
 // src/paginas/Catalogo.jsx
 import React, { useEffect, useState } from "react";
-import pastelApi from "../api/pastelApi";
+import pastelApi from "../api/PastelApi";
 import { FiltrosProductos } from "../components/Carrito/FiltrosProductos";
 import { GrillaProductos } from "../components/Carrito/GrillaProductos";
 import { useLocation, useNavigate } from "react-router-dom";

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Reemplaza la variable de entorno con la URL deseada
-const VITE_API_URL = 'http://localhost:4001/api';
+const VITE_API_URL = 'https://pasteleriajazmin.net.pe/api/api/';
 
 const pastelApi = axios.create({
     baseURL: VITE_API_URL

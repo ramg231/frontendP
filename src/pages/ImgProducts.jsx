@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import pastelApi from "../api/pastelApi";
+import pastelApi from "../api/PastelApi";
 import Swal from "sweetalert2";
 import AsyncSelect from "react-select/async";
 import DataTable from "react-data-table-component";

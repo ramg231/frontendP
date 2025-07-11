@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import logoPasteleria from "../assets/logo.png";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import pastelApi from "../api/pastelApi";
+import pastelApi from "../api/PastelApi";
 import { ArrowLeft, Star, Heart, Share2, ArrowBigRight } from "lucide-react";
 import { SelectorCantidad } from "../components/Carrito/SelectorCantidad";
 import { Caracteristicas } from "../components/Carrito/Carasteristicas";
@@ -24,7 +24,7 @@ export const ProductoDetalle = () => {
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
 
   const handleShareWhatsApp = () => {
-    const telefono = "51949301521"; // Coloca aquí el número de WhatsApp con código de país (sin '+')
+    const telefono = "51965710504"; // Coloca aquí el número de WhatsApp con código de país (sin '+')
     const mensaje = `Hola, deseo más información sobre el producto "${producto.nombre}". Aquí está el enlace: ${window.location.href}`;
     const url = `https://wa.me/${telefono}?text=${encodeURIComponent(mensaje)}`;
     window.open(url, "_blank"); // Abre en una nueva pestaña
@@ -35,16 +35,6 @@ export const ProductoDetalle = () => {
       try {
         const { data } = await pastelApi.get(`/publica/detalle/${id}`);
         setProducto(data);
-
-        const relacionadosRes = await pastelApi.get("/publica", {
-          params: { categoria: data.categoria },
-        });
-
-        const relacionadosFiltrados = relacionadosRes.data
-          .filter((p) => p.id !== data.id)
-          .slice(0, 4);
-
-        setRelacionados(relacionadosFiltrados);
       } catch (error) {
         console.error("Producto no encontrado", error);
         navigate("/catalogo");
@@ -59,49 +49,56 @@ export const ProductoDetalle = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-50 to-orange-50">
-      
-
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Galería con Swiper y Zoom */}
           <div>
-            <Swiper
-              spaceBetween={10}
-              thumbs={{ swiper: thumbsSwiper }}
-              modules={[Thumbs]}
+            <div
+              style={{ height: "350px" }}
               className="rounded-2xl overflow-hidden shadow-lg"
             >
-              {producto.imagenes?.map((img) => (
-                <SwiperSlide key={img.id}>
-                  <Zoom>
-                    <img
-                      src={img.url}
-                      alt="Imagen grande"
-                      className="w-full h-[400px] object-cover rounded-2xl cursor-zoom-in"
-                    />
-                  </Zoom>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+              <Swiper
+                spaceBetween={10}
+                thumbs={{ swiper: thumbsSwiper }}
+                modules={[Thumbs]}
+                className="h-full"
+              >
+                {producto.imagenes?.map((img) => (
+                  <SwiperSlide
+                    key={img.id}
+                    className="h-full flex items-center justify-center p-0 m-0"
+                  >
+                    <Zoom>
+                      <img
+                        src={img.url}
+                        alt="Imagen grande"
+                        className="w-full h-full object-cover rounded-2xl cursor-zoom-in"
+                      />
+                    </Zoom>
+                  </SwiperSlide>
+                ))}
+              </Swiper>
+            </div>
 
             <Swiper
               onSwiper={setThumbsSwiper}
               spaceBetween={10}
-               slidesPerView={producto.imagenes?.length || 1}
+              slidesPerView={producto.imagenes?.length || 1}
               freeMode={true}
               watchSlidesProgress={true}
               modules={[FreeMode, Thumbs]}
               className="mt-4"
             >
               {producto.imagenes?.map((img) => (
-                <SwiperSlide key={img.id} className="cursor-pointer !h-auto">
-                  <div className="h-24">
-                    <img
-                      src={img.url}
-                      alt="Miniatura"
-                      className="w-full h-full object-cover rounded-lg border"
-                    />
-                  </div>
+                <SwiperSlide
+                  key={img.id}
+                  className="cursor-pointer !h-24 flex items-center"
+                >
+                  <img
+                    src={img.url}
+                    alt="Miniatura"
+                    className="w-full h-24 object-cover rounded-lg border"
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>
@@ -127,8 +124,6 @@ export const ProductoDetalle = () => {
                 {producto.nombre}
               </h1>
 
-              
-
               <p className="text-gray-600 text-lg mt-4">
                 {producto.descripcion}
               </p>
@@ -142,7 +137,7 @@ export const ProductoDetalle = () => {
                 Precio referencial
               </span>
             </div>
-                <Caracteristicas productoId={producto.id} />
+            <Caracteristicas productoId={producto.id} />
             <div className="space-y-4">
               {producto.stock > 0 && (
                 <div className="text-lg font-semibold text-gray-700">
@@ -171,8 +166,8 @@ export const ProductoDetalle = () => {
                 <span>Disponibilidad del Producto</span>
               </div>
               <p className="mt-1">
-                -Los productos sin la etiqueta "Del día" están disponibles solo
-                bajo pedido previo{" "}
+                -Los productos sin la etiqueta "HOY" están disponibles solo bajo
+                pedido previo{" "}
               </p>
               <p className="mt-1">
                 -Los pedidos se realizan a través de WhatsApp
@@ -180,12 +175,6 @@ export const ProductoDetalle = () => {
             </div>
           </div>
         </div>
-
-        {relacionados.length > 0 && (
-          <div className="mt-10">
-            <ProductosRelacionados productos={relacionados} />
-          </div>
-        )}
       </main>
     </div>
   );

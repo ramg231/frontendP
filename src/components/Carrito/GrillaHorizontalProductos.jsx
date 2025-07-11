@@ -1,7 +1,7 @@
 // src/components/Carrito/GrillaHorizontalProductos.jsx
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import pastelApi from "../../api/pastelApi";
+import pastelApi from "../../api/PastelApi";
 import { ShoppingCart } from "lucide-react";
 
 export const GrillaHorizontalProductos = () => {

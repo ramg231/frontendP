@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import pastelApi from "../../api/pastelApi";
+import pastelApi from "../../api/PastelApi";
 
 export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
   const [categorias, setCategorias] = useState([]);
@@ -12,7 +12,7 @@ export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
         const { data } = await pastelApi.get("/cat/");
         const categoriasBackend = data.categorias || [];
         setCategorias([
-          { id: "del-dia", nombre: "Del día" },
+          { id: "del-dia", nombre: "HOY" },
           ...categoriasBackend,
         ]);
       } catch (error) {
@@ -85,18 +85,18 @@ export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Filtros Activos */}
       {(Array.isArray(filtros.categoria) && filtros.categoria.length > 0) ||
       filtros.min > 0 ||
       filtros.max < 9999 ||
       (filtros.sabores && filtros.sabores.length > 0) ? (
-        <div className="bg-white p-4 rounded-md shadow-md">
+        <div className="bg-pink-50 border border-pink-200 p-4 rounded-md shadow min-w-[250px]">
           <div className="flex justify-between items-center">
-            <span className="font-semibold">Filtros Activos</span>
+            <span className="font-semibold text-pink-700">Filtros Activos</span>
             <button
               onClick={limpiarFiltros}
-              className="text-sm text-gray-600 hover:underline"
+              className="text-sm text-pink-600 hover:underline hover:text-pink-800"
             >
               Limpiar Todo
             </button>
@@ -106,12 +106,12 @@ export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
               filtros.categoria.map((catId) => (
                 <span
                   key={catId}
-                  className="bg-gray-200 px-2 py-1 rounded-md flex items-center gap-1"
+                  className="bg-pink-100 text-pink-700 px-2 py-1 rounded-md flex items-center gap-1 border border-pink-200"
                 >
                   {categorias.find((c) => c.id == catId)?.nombre || "Categoría"}
                   <X
                     size={14}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:text-pink-900"
                     onClick={() => manejarQuitarCategoria(catId)}
                   />
                 </span>
@@ -120,12 +120,12 @@ export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
               filtros.sabores.map((sid) => (
                 <span
                   key={sid}
-                  className="bg-gray-200 px-2 py-1 rounded-md flex items-center gap-1"
+                  className="bg-orange-100 text-orange-700 px-2 py-1 rounded-md flex items-center gap-1 border border-orange-200"
                 >
                   {sabores.find((s) => s.id === sid)?.nombre || "Sabor"}
                   <X
                     size={14}
-                    className="cursor-pointer"
+                    className="cursor-pointer hover:text-orange-900"
                     onClick={() => manejarCambioSabor(sid)}
                   />
                 </span>
@@ -135,41 +135,47 @@ export const FiltrosProductos = ({ filtros, setFiltros, setPaginaActual }) => {
       ) : null}
 
       {/* Filtro por Categoría */}
-      <div className="bg-white p-4 rounded-md shadow-md">
-        <h3 className="font-semibold text-lg mb-3">Categorías</h3>
-        {categorias.map((c) => (
-          <div key={c.id} className="flex items-center mb-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={
-                  Array.isArray(filtros.categoria)
-                    ? filtros.categoria.includes(c.id)
-                    : false
-                }
-                onChange={() => manejarCambioCategoria(c.id)}
-              />
-              <span>{c.nombre}</span>
-            </label>
-          </div>
-        ))}
+      <div className="bg-white p-4 rounded-md shadow-md min-w-[250px] border border-pink-100">
+        <h3 className="font-semibold text-lg mb-3 text-pink-700">Categorías</h3>
+        <div className="grid grid-cols-2 gap-x-4 gap-y-1 md:grid-cols-1">
+          {categorias.map((c) => (
+            <div key={c.id} className="flex items-center">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="accent-pink-500"
+                  checked={
+                    Array.isArray(filtros.categoria)
+                      ? filtros.categoria.includes(c.id)
+                      : false
+                  }
+                  onChange={() => manejarCambioCategoria(c.id)}
+                />
+                <span>{c.nombre}</span>
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Filtro por Sabores */}
-      <div className="bg-white p-4 rounded-md shadow-md">
-        <h3 className="font-semibold text-lg mb-3">Sabores</h3>
-        {sabores.map((s) => (
-          <div key={s.id} className="flex items-center mb-2">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                checked={filtros.sabores?.includes(s.id)}
-                onChange={() => manejarCambioSabor(s.id)}
-              />
-              <span>{s.nombre}</span>
-            </label>
-          </div>
-        ))}
+      <div className="bg-white p-4 rounded-md shadow-md min-w-[250px] border border-orange-100">
+        <h3 className="font-semibold text-lg mb-3 text-orange-700">Sabores</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-1 gap-x-4 gap-y-1">
+          {sabores.map((s) => (
+            <div key={s.id} className="flex items-center">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  className="accent-orange-500"
+                  checked={filtros.sabores?.includes(s.id)}
+                  onChange={() => manejarCambioSabor(s.id)}
+                />
+                <span>{s.nombre}</span>
+              </label>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

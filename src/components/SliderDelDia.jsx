@@ -6,7 +6,7 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 import { EffectCoverflow, Pagination } from "swiper/modules";
 import "../css/MaterialSlider.css";
-import pastelApi from "../api/pastelApi";
+import pastelApi from "../api/PastelApi";
 import { Link } from "react-router-dom";
 
 export const SliderDelDia = () => {
@@ -36,7 +36,7 @@ export const SliderDelDia = () => {
           effect="coverflow"
           grabCursor={true}
           centeredSlides={true}
-          slidesPerView={"auto"}
+          slidesPerView="auto"
           coverflowEffect={{
             rotate: 0,
             stretch: 0,
@@ -45,10 +45,11 @@ export const SliderDelDia = () => {
           }}
           pagination={{ clickable: true }}
           modules={[EffectCoverflow, Pagination]}
-          className="mySwiper"
+          className="mySwiper flex justify-center max-h-[400px]"
+          style={{ maxWidth: "100%", margin: "0 auto", height: "400px" }}
         >
           {slides.map((slide) => (
-            <SwiperSlide key={slide.id}>
+            <SwiperSlide key={slide.id} className="flex justify-center">
               <Link to="/catalogo?categoria=del-dia">
                 <div className="relative rounded-2xl overflow-hidden shadow-xl w-[250px] h-[350px] hover:scale-105 transition-transform duration-300">
                   <img

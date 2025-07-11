@@ -8,6 +8,12 @@ import {
   ShieldCheck,
   CopyCheck,
   Menu,
+  User,
+  Package ,
+  ChartBarStacked,
+  RotateCwSquare,
+  Pencil, 
+
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store/useAuthStore";
@@ -23,17 +29,19 @@ export const Sidebar = () => {
   };
 
   const closeMenu = () => setIsOpen(false);
-
+ 
   const navLinks = [
     {
       to: "/admin/dashboard",
       icon: <LayoutDashboard size={20} />,
       label: "Dashboard",
     },
-     { to: "/admin/usuarios", icon: <Cake size={20} />, label: "usuarios" },
-    { to: "/admin/productos", icon: <Cake size={20} />, label: "Productos" },
-     { to: "/admin/imagen-productos", icon: <Cake size={20} />, label: "Imagenes" },
-     { to: "/admin/img-pro", icon: <Cake size={20} />, label: "Editar" },
+     { to: "/admin/usuarios", icon: <User size={20} />, label: "usuarios" },
+    { to: "/admin/productos", icon: <Package size={20} />, label: "Productos" },
+    { to: "/admin/categorias", icon: <ChartBarStacked size={20} />, label: "Categorias" },
+    { to: "/admin/opciones", icon: <Menu size={20} />, label: "Opciones" },
+     { to: "/admin/imagen-productos", icon: <RotateCwSquare size={20} />, label: "Imagenes" },
+     { to: "/admin/img-pro", icon: <Pencil size={20} />, label: "Editar" },
     { to: "/admin/pedidos", icon: <ShoppingBag size={20} />, label: "Pedidos" },
     { to: "/admin/rol", icon: <HandCoins size={20} />, label: "Roles" },
     {

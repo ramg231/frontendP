@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import pastelApi from "../api/pastelApi";
+import pastelApi from "../api/PastelApi";
 import Swal from "sweetalert2";
 
 export const Productos = () => {
@@ -26,6 +26,7 @@ export const Productos = () => {
   const [editando, setEditando] = useState(false);
   const [paginaActual, setPaginaActual] = useState(1);
   const productosPorPagina = 5;
+  const [busqueda, setBusqueda] = useState(""); // <-- Nuevo estado
 
   useEffect(() => {
     obtenerProductos();
@@ -85,12 +86,15 @@ export const Productos = () => {
       if (editando) {
         await pastelApi.put(`/products/${form.id}`, form);
         // Actualizar sabores
-         await pastelApi.put(`/products/${form.id}/sabores`, {
-          sabores: saboresSeleccionados.map(id => ({ sabor_id: id, estado: true }))
+        await pastelApi.put(`/products/${form.id}/sabores`, {
+          sabores: saboresSeleccionados.map((id) => ({
+            sabor_id: id,
+            estado: true,
+          })),
         });
         // Actualizar tamaños
         await pastelApi.put(`/products/${form.id}/tamanos`, {
-          tamanos: tamanosConPrecio
+          tamanos: tamanosConPrecio,
         });
         Swal.fire(
           "Actualizado",
@@ -153,7 +157,7 @@ export const Productos = () => {
         tamanosRes.data.tamanos.map((t) => ({
           tamano_id: t.id,
           precio: t.precio,
-          estado: t.estado
+          estado: t.estado,
         }))
       );
     } catch (e) {
@@ -169,20 +173,25 @@ export const Productos = () => {
     try {
       await pastelApi.put(`/products/${id}`, { destacado: nuevoValor });
       setProductos((prev) =>
-        prev.map((p) =>
-          p.id === id ? { ...p, destacado: nuevoValor } : p
-        )
+        prev.map((p) => (p.id === id ? { ...p, destacado: nuevoValor } : p))
       );
     } catch (error) {
       Swal.fire("Error", "No se pudo actualizar el destacado", "error");
     }
   };
 
-  // Calcular productos a mostrar
+  // Filtrado por nombre
+  const productosFiltrados = productos.filter((prod) =>
+    prod.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
+
+  // Calcular productos a mostrar (paginación sobre filtrados)
   const indiceUltimo = paginaActual * productosPorPagina;
   const indicePrimero = indiceUltimo - productosPorPagina;
-  const productosPagina = productos.slice(indicePrimero, indiceUltimo);
-  const totalPaginas = Math.ceil(productos.length / productosPorPagina);
+  const productosPagina = productosFiltrados.slice(indicePrimero, indiceUltimo);
+  const totalPaginas = Math.ceil(
+    productosFiltrados.length / productosPorPagina
+  );
 
   return (
     <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow">
@@ -330,7 +339,15 @@ export const Productos = () => {
               return (
                 <li key={index} className="flex items-center gap-2">
                   {tam?.nombre} ({tam?.porciones} porciones) - S/ {tp.precio}
-                  <span className={`ml-2 px-2 py-0.5 rounded text-xs ${tp.estado ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>{tp.estado ? 'Activo' : 'Inactivo'}</span>
+                  <span
+                    className={`ml-2 px-2 py-0.5 rounded text-xs ${
+                      tp.estado
+                        ? "bg-green-200 text-green-800"
+                        : "bg-red-200 text-red-800"
+                    }`}
+                  >
+                    {tp.estado ? "Activo" : "Inactivo"}
+                  </span>
                   <button
                     type="button"
                     className="ml-2 text-red-500 hover:underline"
@@ -353,7 +370,7 @@ export const Productos = () => {
                       );
                     }}
                   >
-                    {tp.estado ? 'Desactivar' : 'Activar'}
+                    {tp.estado ? "Desactivar" : "Activar"}
                   </button>
                 </li>
               );
@@ -379,6 +396,21 @@ export const Productos = () => {
             Cancelar
           </button>
         )}
+      </div>
+      <div className="mb-4"></div>
+      {/* Buscador */}
+
+      <div className="mb-6 flex items-center gap-2">
+        <input
+          type="text"
+          placeholder="Buscar producto por nombre..."
+          value={busqueda}
+          onChange={(e) => {
+            setBusqueda(e.target.value);
+            setPaginaActual(1); // Reinicia a la primera página al buscar
+          }}
+          className="border p-2 rounded w-full md:w-1/2"
+        />
       </div>
 
       <table className="w-full border text-left mt-6">
@@ -434,16 +466,16 @@ export const Productos = () => {
             key={i + 1}
             onClick={() => setPaginaActual(i + 1)}
             className={`px-3 py-1 rounded ${
-              paginaActual === i + 1
-                ? "bg-pink-500 text-white"
-                : "bg-gray-200"
+              paginaActual === i + 1 ? "bg-pink-500 text-white" : "bg-gray-200"
             }`}
           >
             {i + 1}
           </button>
         ))}
         <button
-          onClick={() => setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))}
+          onClick={() =>
+            setPaginaActual((prev) => Math.min(prev + 1, totalPaginas))
+          }
           disabled={paginaActual === totalPaginas}
           className="px-3 py-1 rounded bg-gray-200 disabled:opacity-50"
         >

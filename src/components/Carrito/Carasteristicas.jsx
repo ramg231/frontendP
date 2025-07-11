@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import pastelApi from "../../api/pastelApi";
+import pastelApi from "../../api/PastelApi";
 
 export const Caracteristicas = ({ productoId }) => {
   const [tamanos, setTamanos] = useState([]);
